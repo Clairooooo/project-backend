@@ -1,4 +1,5 @@
 <?php
+
 function GetBadgePesan()
 {
     echo '<i class="fa fa-envelope-o"></i>';

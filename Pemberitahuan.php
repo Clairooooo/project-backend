@@ -1,35 +1,30 @@
 <?php
 session_start();
-include "../../../../config/koneksi.php";
 
-if ($_GET['aksi'] == "edit") {
-    $id_pemberitahuan = $_GET['id_pemberitahuan'];
-    $status = "Sudah dibaca";
+function InsertPemberitahuanPeminjaman()
+{
+    include "../../../../config/koneksi.php";
 
-    $query = "UPDATE pemberitahuan SET status = '$status'";
-    $query .= "WHERE id_pemberitahuan = '$id_pemberitahuan'";
+    $nama_anggota = $_POST['namaAnggota'];
+    $notif = addslashes("<i class='fa fa-exchange'></i> #" . $nama_anggota . " Telah meminjam Buku");
+    $level = "Admin";
+    $status = "Belum dibaca";
 
-    $sql = mysqli_query($koneksi, $query);
+    $sql = "INSERT INTO pemberitahuan(isi_pemberitahuan,level_user,status) 
+                VALUES('" . $notif . "','" . $level . "','" . $status . "')";
+    $sql .= mysqli_query($koneksi, $sql);
+}
 
-    if ($sql) {
-        header("location: " . $_SERVER['HTTP_REFERER']);
-    } else {
-        $_SESSION['gagal'] = "Maaf terjadi masalah dalam update status pemberitahuan !";
-        header("location: " . $_SERVER['HTTP_REFERER']);
-    }
-} elseif ($_GET['aksi'] == "badgeNotif") {
-    include "PemberitahuanRealtime.php";
+function InsertPemberitahuanPengembalian()
+{
+    include "../../../../config/koneksi.php";
 
-    // Badge Notif
-    GetBadgePemberitahuan();
-} else if ($_GET['aksi'] == "headerNotif") {
-    include "PemberitahuanRealtime.php";
+    $nama_anggota = $_SESSION['fullname'];
+    $notif = addslashes("<i class='fa fa-repeat'></i> #" . $nama_anggota . " Telah mengembalikan Buku");
+    $level = "Admin";
+    $status = "Belum dibaca";
 
-    // Header Notif
-    GetHeaderPemberitahuan();
-} else if ($_GET['aksi'] == "isiNotif") {
-    include "PemberitahuanRealtime.php";
-
-    // Isi Notif
-    GetIsiPemberitahuan();
+    $sql = "INSERT INTO pemberitahuan(isi_pemberitahuan,level_user,status) 
+                VALUES('" . $notif . "','" . $level . "','" . $status . "')";
+    $sql .= mysqli_query($koneksi, $sql);
 }

@@ -3,36 +3,7 @@ session_start();
 include "../../../../config/koneksi.php";
 include "PesanRealtime.php";
 
-if ($_GET['aksi'] == "kirim") {
-
-    if ($_POST['namaPenerima'] == NULL) {
-        $_SESSION['gagal'] = "Harap pilih penerima pesan !";
-        header("location: " . $_SERVER['HTTP_REFERER']);
-    } else {
-        //
-        $pengirim = $_POST['pengirim'];
-        $penerima = $_POST['namaPenerima'];
-        $judul_pesan = $_POST['judulPesan'];
-        $isi_pesan = $_POST['isiPesan'];
-        date_default_timezone_set('Asia/Jakarta');
-        $tanggal_kirim = date('d-m-Y');
-        $status = "Belum dibaca";
-
-        $sql = "INSERT INTO pesan(penerima,pengirim,judul_pesan,isi_pesan,status,tanggal_kirim)
-            VALUES('" . $penerima . "', '" . $pengirim . "', '" . $judul_pesan . "', '" . $isi_pesan . "', '" . $status . "', '" . $tanggal_kirim . "')";
-
-        $sql .= mysqli_query($koneksi, $sql);
-
-        if ($sql) {
-            $_SESSION['berhasil'] = "Pesan berhasil terkirim !!";
-            header("location: " . $_SERVER['HTTP_REFERER']);
-        } else {
-            $_SESSION['gagal'] = "Pesan gagal terkirim !!. Cek QUERY";
-            header("location: " . $_SERVER['HTTP_REFERER']);
-        }
-    }
-} elseif ($_GET['aksi'] == "update") {
-    //
+if ($_GET['aksi'] == "update") {
     $id = $_GET['id_pesan'];
 
     $query_edit = "UPDATE pesan SET status = 'Sudah dibaca'";
@@ -46,35 +17,47 @@ if ($_GET['aksi'] == "kirim") {
         $_SESSION['gagal'] = "Status pesan gagal di update !!. Cek QUERY";
         header("location: " . $_SERVER['HTTP_REFERER']);
     }
-} elseif ($_GET['aksi'] == "hapus") {
-    $id_pesan = $_GET['id_pesan'];
+} elseif ($_GET['aksi'] == "kirim") {
 
-    $sql = mysqli_query($koneksi, "DELETE FROM pesan WHERE id_pesan = '$id_pesan'");
-
-    if ($sql) {
-        $_SESSION['berhasil'] = "Data pesan berhasil di hapus !";
+    if ($_POST['namaPenerima'] == NULL) {
+        $_SESSION['gagal'] = "Harap pilih penerima pesan !";
         header("location: " . $_SERVER['HTTP_REFERER']);
     } else {
-        $_SESSION['gagal'] = "Data pesan gagal di hapus !";
-        header("location: " . $_SERVER['HTTP_REFERER']);
+        // Variable hasil POST
+        date_default_timezone_set('Asia/Jakarta');
+        $nama_penerima = $_POST['namaPenerima'];
+        $pengirim = $_POST['pengirim'];
+        $judul_pesan = $_POST['judulPesan'];
+        $isi_pesan = $_POST['isiPesan'];
+        $status = "Belum dibaca";
+        $tanggal_kirim = date('d-m-Y');
+        // SQL
+        $sql = "INSERT INTO pesan(penerima,pengirim,judul_pesan,isi_pesan,status,tanggal_kirim)
+            VALUES('" . $nama_penerima . "','" . $pengirim . "','" . $judul_pesan . "','" . $isi_pesan . "','" . $status . "','" . $tanggal_kirim . "')";
+
+        $sql .= mysqli_query($koneksi, $sql);
+        // Cek SQL
+        if ($sql) {
+            $_SESSION['berhasil'] = "Pesan berhasil terkirim !";
+            header("location: " . $_SERVER['HTTP_REFERER']);
+        } else {
+            $_SESSION['gagal'] = "Pesan gagal terkirim !";
+            header("location: " . $_SERVER['HTTP_REFERER']);
+        }
     }
 } elseif ($_GET['aksi'] == "badgePesan") {
-    //
     GetBadgePesan();
 } elseif ($_GET['aksi'] == "Pesan") {
-    //
     GetPesan();
 } elseif ($_GET['aksi'] == "jumlahPesan") {
-    //
     GetJumlahPesan();
 }
-
 function UpdateDataPesan()
 {
     include "../../../../config/koneksi.php";
 
     $nama_lama = $_SESSION['fullname'];
-    $nama_saya = $_POST['fullname'];
+    $nama_saya = $_POST['Fullname'];
 
     $query = "UPDATE pesan SET pengirim = '$nama_saya'";
     $query .= "WHERE pengirim = '$nama_lama'";
@@ -87,6 +70,6 @@ function UpdateDataPesan()
 
         // Mulai session baru
         session_start();
-        $_SESSION['fullname'] = $_POST['fullname'];
+        $_SESSION['fullname'] = $_POST['Fullname'];
     }
 }
